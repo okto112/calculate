@@ -22,17 +22,24 @@
             $num = filter_input(INPUT_POST, 'num'); 
             $numList = filter_input(INPUT_POST, 'numList'); 
             $symbolList = filter_input(INPUT_POST, 'symbolList'); 
-
-            if($numList!=""||$numList==""&&!isSymBtn($selectBtn)){
-                $display = $display . $selectBtn;
-            }
+            $symSign = filter_input(INPUT_POST, 'symSign'); 
 
             if(isNumBtn($selectBtn)){
                 $num .= $selectBtn;
-            }elseif(isSymBtn($selectBtn)){
+                $symSign = true;
+                $display = $display . $selectBtn;
+            }elseif(isSymBtn($selectBtn)&&$symSign){
                 $symbolList .= $selectBtn . ",";
                 $numList .= $num . ",";
                 $num = null;
+                $symSign = false;
+                $display = $display . $selectBtn;
+            }elseif($selectBtn=="AC"){
+                $display = "";
+                $numList = "";
+                $num = "";
+                $symbolList = "";
+                $symbol = false;
             }elseif($selectBtn=="=" && $numList!=""){
                 $symbolList .= $selectBtn;
                 $numList .= $num;
@@ -92,7 +99,7 @@
         }
             
         function isNumBtn($btn){
-            if($btn=="0"||$btn=="1"||$btn=="2"||$btn=="3"||$btn=="4"||$btn=="5"||$btn=="6"||$btn=="7"||$btn=="8"||$btn=="9"||$btn=="."){
+            if(is_numeric($btn)||$btn=="."){
                 return true;
             }else{
                 return false;
@@ -114,6 +121,7 @@
             <input type="hidden" name="num" value="<?php echo $num;?>"/>
             <input type="hidden" name="numList" value="<?php echo $numList;?>"/>
             <input type="hidden" name="symbolList" value="<?php echo $symbolList;?>"/>
+            <input type="hidden" name="symSign" value="<?php echo $symSign;?>"/>
 
             <table>
                 <?php
